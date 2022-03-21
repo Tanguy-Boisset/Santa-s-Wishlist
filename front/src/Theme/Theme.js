@@ -76,6 +76,7 @@ function Theme() {
   return (
     <div>
       <canvas id="snow"></canvas>
+      <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
     </div>
   );
 }
