@@ -69,19 +69,13 @@ function Theme() {
       
     };
     
-    var confetti = Snow.init();
+    Snow.init();
   });
 
   // Render HTML
   return (
     <div>
-      <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
       <canvas id="snow"></canvas>
-      <div class="center">
-        <div class="text-center">
-          <h1>Santa's Wishlist</h1>
-        </div>
-      </div>
     </div>
   );
 }
