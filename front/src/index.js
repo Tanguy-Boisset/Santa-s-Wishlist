@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Theme from './Theme/Theme';
-import Home from './Home/Home'
+import Main from './Main';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Theme/><Home/>
+    <Main/>
   </React.StrictMode>,
-  document.getElementById('theme')
+  document.getElementById('main')
 );
