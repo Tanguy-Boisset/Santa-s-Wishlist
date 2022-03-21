@@ -4,6 +4,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import Navbar from './Navbar/Navbar';
 import Theme from './Theme/Theme';
 import Home from './Home/Home';
 
@@ -12,20 +13,7 @@ export default function Main() {
   return (
     <Router>
       <div>
-          {/* TODO ADD CLEAN NAVBAR
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
-          */}
-
+        <Navbar/>
         <Theme/>
         <Routes>
             <Route path='/' element={<Home/>} />

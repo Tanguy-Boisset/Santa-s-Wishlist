@@ -1,0 +1,22 @@
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    float: left;
+}
+  
+a {
+    display: block;
+    padding: 18px;
+    background-color: #a23227;
+    text-transform: none;
+    color: white;
+}
+
+.nav {
+    background-color:#a23227;
+    height: 52px;
+}
