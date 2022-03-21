@@ -8,8 +8,8 @@ function Theme() {
     var Snow = {
       el: "#snow", 
       density: 10000, // higher = fewer bits
-      maxHSpeed: 5, // How much do you want them to move horizontally
-      minFallSpeed: 2,
+      maxHSpeed: 3, // How much do you want them to move horizontally
+      minFallSpeed: 0.7,
       canvas: null,
       ctx: null, 
       particles: [],
