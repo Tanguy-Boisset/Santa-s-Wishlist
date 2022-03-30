@@ -4,19 +4,19 @@ import Gift from '../Gift/Gift';
 // Data exported from Database
 let cadeau1 = {
     'id': 0,
-    'name' : 'Nintendo Switch',
-    'description' : 'En tant que grand gamer, j\'ai besoin d\'une Switch',
+    'name' : 'Un stage',
+    'description' : 'Nolwenn bordel tu fous quoi !?',
     'link' : 'https://www.amazon.fr/Nintendo-Switch-avec-paire-Rouge/dp/B07WKNQ8JT/',
-    'price' : 270,
+    'price' : 5,
     'chosen': true
 };
 
 let cadeau2 = {
     'id': 1,
-    'name' : 'Nintendo Switch',
-    'description' : 'En tant que grand gamer, j\'ai besoin d\'une Switch',
+    'name' : 'Une validation en OS',
+    'description' : 'Stp, pas les rattrapages',
     'link' : 'https://www.amazon.fr/Nintendo-Switch-avec-paire-Rouge/dp/B07WKNQ8JT/',
-    'price' : 270,
+    'price' : 0,
     'chosen': true
 };
 
@@ -34,7 +34,7 @@ let myWishlist = {
     'name': 'La Wishlist de Tanguy :D',
     'date': '28-01-2022',
     'description': 'Voilà tous les cadeaux que j\'adoooorerais avoir pour Noël !! :D',
-    'cadeaux': [cadeau1,cadeau2,cadeau3]
+    'cadeaux': [cadeau1,cadeau2,cadeau3,cadeau3,cadeau3]
 };
 
 

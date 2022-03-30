@@ -1,10 +1,24 @@
+.wishlist h1 {
+    font-size: 22px;
+}
+
+.wishlist h3 {
+    font-size: 15px;
+}
+
+.wishlist h4 {
+    font-size: 12px;
+}
+
 .wishlist ul {
     list-style-type: none;
-    margin: 50px;
+    margin: 0px;
     padding: 0;
+    max-height: 600px;
+    overflow-y: scroll;
 }
 
 .wishlist li {
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
