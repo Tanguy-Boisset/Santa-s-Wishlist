@@ -10,7 +10,7 @@ function Navbar() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/">My Wishlists</Link>
+            <Link to="/wishlist">My Wishlist</Link>
           </li>
           <li>
             <Link to="/">Friends' Wishlists</Link>
