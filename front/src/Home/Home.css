@@ -1,3 +1,8 @@
+.center {
+	top :0;
+	bottom: 0;
+}
+
 
 .button {
 	display: inline-block;
@@ -5,7 +10,7 @@
 	   -moz-box-sizing:border-box;
 	        box-sizing:border-box;
 	min-width:100px;
-    margin-top: 10%;
+    margin-top: 5%;
 	padding: 22px 33px;
 	font-size: 18px;
 	line-height: 26px;
