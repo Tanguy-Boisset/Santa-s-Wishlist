@@ -22,7 +22,7 @@ function Navbar() {
             <Link to="/">Log out</Link>
           </li>
           <li>
-            <Link to="/">Sign in</Link>
+            <Link to="/signup">Sign up</Link>
           </li>
         </ul>
         </div>
