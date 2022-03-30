@@ -1,0 +1,10 @@
+.wishlist ul {
+    list-style-type: none;
+    margin: 50px;
+    padding: 0;
+}
+
+.wishlist li {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

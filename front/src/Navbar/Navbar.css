@@ -1,14 +1,14 @@
-ul {
+.nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-li {
+.nav li {
     float: left;
 }
   
-a {
+.nav a {
     display: block;
     padding: 18px;
     background-color: #a23227;
