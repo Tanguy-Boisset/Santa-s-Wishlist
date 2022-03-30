@@ -7,6 +7,7 @@ import {
 import Navbar from './Navbar/Navbar';
 import Theme from './Theme/Theme';
 import Home from './Home/Home';
+import Login from './Login/Login';
 
 
 export default function Main() {
@@ -17,6 +18,7 @@ export default function Main() {
         <Theme/>
         <Routes>
             <Route path='/' element={<Home/>} />
+            <Route path='/login' element={<Login/>} />
 
         </Routes>
       </div>
