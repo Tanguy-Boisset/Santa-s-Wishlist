@@ -8,7 +8,7 @@ function Gift(gift) {
             <h5>{gift.name}</h5>
             <p>{gift.price}€</p>
             <p>{gift.description}</p>
-            <a href={gift.link}>{linkText}</a>
+            <a href={gift.link} target="_blank">{linkText}</a>
         </div>
     );
     }

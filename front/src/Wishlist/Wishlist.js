@@ -46,7 +46,7 @@ function Wishlist() {
                 <h1>{myWishlist.name}</h1>
                 <h3>{myWishlist.description}</h3>
                 <h4>Créée le {myWishlist.date}</h4>
-                <ul>
+                <ul className="scrollbar">
                     {myWishlist.cadeaux.map(function(cadeau){
             		    return <li key={cadeau.id}>{Gift(cadeau)}</li>;
           		})}
