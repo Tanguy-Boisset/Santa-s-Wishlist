@@ -28,7 +28,6 @@ def delete_user_table():
 def add_user(pseudo, name, surname, plain_password):
 
     hashed_password = generate_password_hash(plain_password, method='sha256')
-
     insert_stmt = userTable.insert().values(
         pseudo=pseudo,
         name=name,
@@ -52,12 +51,23 @@ def update_password(id, plain_password):
     conn.execute(update)
     conn.close()
 
-def pseudo_in_database(pseudo):
-    return bool(User.query.filter_by(pseudo=pseudo).first())
 
 def get_id(pseudo):
-    return User.query.filter_by(pseudo=pseudo).first()
+    query = select(userTable.c.id).where(userTable.c.pseudo == pseudo)
+    conn = engine.connect()
+    results = conn.execute(query)
+    id=None
+    for result in results:
+        id=result[0]
+    conn.close()
+    return id
+
 
 def check_password(id, password):
-    hashed_password = User.query.filter_by(id=id).first()
+    query = select(userTable.c.password).where(userTable.c.id == id)
+    conn = engine.connect()
+    results = conn.execute(query)
+    for result in results:
+        hashed_password=result[0]
+    conn.close()
     return check_password_hash(hashed_password, password)
