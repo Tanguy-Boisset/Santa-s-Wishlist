@@ -6,7 +6,6 @@ from config import engine
 
 db = SQLAlchemy()
 
-
 class Wishlist(db.Model):
     id = db.Column(db.Integer, autoincrement = True, primary_key=True)
     id_creator = db.Column(db.Integer)
@@ -58,3 +57,33 @@ def update_Wishlist(id, id_creator, name, description, date):
 
 def is_in_database(id):
     return bool(WishlistTable.query.filter_by(id=id).first())
+
+def get_wishlist(id_creator):
+
+    query = select([
+        WishlistTable.c.id,
+        WishlistTable.c.id_creator,
+        WishlistTable.c.name,
+        WishlistTable.c.hashed_url,
+        WishlistTable.c.description,
+        WishlistTable.c.date,
+        ]).where(WishlistTable.c.id_creator == id_creator).distinct()
+
+
+    conn = engine.connect()
+    results = conn.execute(query)
+
+    whist_list_table = []
+
+    for result in results:
+        whist_list_table.append({
+            "id":result[0],
+            "id_creator": result[1],
+            "name":result[2],
+            "hashed_url":result[3],
+            "description":result[4],
+            "date":result[5]
+        })
+
+    conn.close()
+    return whist_list_table
