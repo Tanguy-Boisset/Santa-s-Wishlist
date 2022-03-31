@@ -45,3 +45,31 @@
 .giftLink {
     font-size: 12px;
 }
+
+#addGift {
+    display: inline;
+}
+
+.text-left{
+    width:100%;
+}
+
+.inputAddGift{
+    right:0;
+    width:30%;
+}
+
+.labelAddGift{
+    display:block;
+    text-align: left;
+    margin-left: 35%;
+    margin-top: 10px;
+}
+
+#errorAddGift{
+    color:red;
+}
+
+#AddGiftSubmit {
+    margin-bottom: 5px;;
+}

@@ -1,5 +1,5 @@
 import './Wishlist.css';
-import Gift from '../Gift/Gift';
+import Gift, {AddGift} from '../Gift/Gift';
 
 // Data exported from Database
 let cadeau1 = {
@@ -50,6 +50,7 @@ function Wishlist() {
                     {myWishlist.cadeaux.map(function(cadeau){
             		    return <li key={cadeau.id}>{Gift(cadeau)}</li>;
           		})}
+                <AddGift/>
                 </ul>
 
 	        </div>
