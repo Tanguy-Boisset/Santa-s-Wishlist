@@ -12,7 +12,6 @@ class Wishlist(db.Model):
     name = db.Column(db.String)
     hashed_url = db.Column(db.String)
     description = db.Column(db.String)
-    date = db.Column(db.Date)
 
 WishlistTable = Table('wishlist', Wishlist.metadata)
 
@@ -22,24 +21,23 @@ def create_WishlistTable():
 def delete_WishlistTable():
     Wishlist.metadata.drop_all(engine)
 
-def add_Wishlist(id_creator, name, description, date):
+def add_Wishlist(id_creator, name, description):
 
-    hashed_url = generate_password_hash(id_creator+name+description+date, method='sha256')
+    hashed_url = generate_password_hash(f"{id_creator}{name}{description}", method='sha256')
 
     insert_stmt = WishlistTable.insert().values(
         id_creator=id_creator,
         name=name,
         hashed_url=hashed_url,
         description=description,
-        date=date
     )
     conn = engine.connect()
     conn.execute(insert_stmt)
     conn.close()
 
-def update_Wishlist(id, id_creator, name, description, date):
+def update_Wishlist(id, id_creator, name, description):
 
-    hashed_url = generate_password_hash(id_creator+name+description+date, method='sha256')
+    hashed_url = generate_password_hash(f"{id_creator}{name}{description}", method='sha256')
 
     update = WishlistTable.update().\
         values(
@@ -47,7 +45,6 @@ def update_Wishlist(id, id_creator, name, description, date):
             name=name,
             hashed_url=hashed_url,
             description=description,
-            date=date
         ).\
         where(WishlistTable.c.id == id)
 
@@ -66,9 +63,7 @@ def get_wishlist(id_creator):
         WishlistTable.c.name,
         WishlistTable.c.hashed_url,
         WishlistTable.c.description,
-        WishlistTable.c.date,
         ]).where(WishlistTable.c.id_creator == id_creator).distinct()
-
 
     conn = engine.connect()
     results = conn.execute(query)
@@ -82,7 +77,6 @@ def get_wishlist(id_creator):
             "name":result[2],
             "hashed_url":result[3],
             "description":result[4],
-            "date":result[5]
         })
 
     conn.close()
