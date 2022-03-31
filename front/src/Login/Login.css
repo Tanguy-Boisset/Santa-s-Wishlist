@@ -5,3 +5,7 @@
 .button{
 	margin:3%;
 }
+
+input {
+	border-radius: 5px;
+}
