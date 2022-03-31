@@ -17,8 +17,8 @@ function submitSignup(){
         const requestOptions = {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                // 'Accept': 'application/json',
+                // 'Content-Type': 'application/json'
                 },
             body: JSON.stringify({
                                 name: nodeForm[0].value,
@@ -27,7 +27,14 @@ function submitSignup(){
                                 password: nodeForm[3].value,
                                 })
             }
-            fetch("http://localhost:3000/signup", requestOptions)
+            
+            fetch('http://127.0.0.1:5000/signup',requestOptions)
+                .then(response => {
+                    console.log(response.statusText);
+                    return response.text();
+                })
+                .then(data => console.log(data));
+            
     }
     else{
         nodePassword.style.border="2px red solid";
