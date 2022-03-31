@@ -3,6 +3,7 @@ from sqlalchemy.sql import select
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 from config import engine
+import hashlib
 
 db = SQLAlchemy()
 
@@ -23,7 +24,7 @@ def delete_WishlistTable():
 
 def add_Wishlist(id_creator, name, description):
 
-    hashed_url = generate_password_hash(f"{id_creator}{name}{description}", method='sha256')
+    hashed_url = hashlib.md5(f"{id_creator}{name}{description}".encode()).hexdigest()
 
     insert_stmt = WishlistTable.insert().values(
         id_creator=id_creator,
@@ -90,7 +91,7 @@ def get_all_wishlists():
         WishlistTable.c.name,
         WishlistTable.c.hashed_url,
         WishlistTable.c.description,
-        ]).where().distinct()
+        ])
 
     conn = engine.connect()
     results = conn.execute(query)
@@ -108,3 +109,17 @@ def get_all_wishlists():
 
     conn.close()
     return whist_list_table
+
+
+def get_id_wishlist_from_id_user(id_user):
+
+    query = select([
+        WishlistTable.c.id,
+        ]).where(WishlistTable.c.id_creator == id_user).distinct()
+
+    conn = engine.connect()
+    results = conn.execute(query)
+    id_wishlist = results.first()[0]
+    conn.close()
+
+    return id_wishlist

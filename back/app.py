@@ -55,7 +55,6 @@ def signup():
     User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
     id = User.get_id(pseudo)
 
-
     Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
 
     access_token = create_access_token(identity=id)
@@ -64,13 +63,28 @@ def signup():
 
 @app.route("/add_gift", methods=["POST"])
 @jwt_required()
-def add_wishlist():
-    id = get_jwt_identity()
+def add_gift():
+    id_user = get_jwt_identity()
     name = request.json.get("name", None)
-    description = request.json.get("description", None)
+    url = request.json.get("url", None)
+    price = request.json.get("price", None)
+    description = request.json.get("name", None)
+    state = "not-attribute"
 
-    Wishlist.add_Wishlist(id_creator = id, name=name, description=description)
-    return jsonify({"msg": "wishlist created"}), 200
+    id_wishlist = Wishlist.get_id_wishlist_from_id_user(id_user)
+    Gift.add_Gift(id_wishlist = id_wishlist, name=name, url=url, price=price, description=description, state=state)
+    return jsonify({"msg": "gift added to the wishlist ! "}), 200
+
+
+
+@app.route("/delete_gift", methods=["POST"])
+@jwt_required()
+def delete_gift():
+    id_user = get_jwt_identity()
+
+    id_wishlist = Wishlist.get_id_wishlist_from_id_user(id_user)
+    Gift.add_Gift(id_wishlist = id_wishlist, name=name, url=url, price=price, description=description, state=state)
+    return jsonify({"msg": "gift added to the wishlist ! "}), 200
 
 
 @app.route("/get_wishlist", methods=["GET"])
@@ -84,6 +98,7 @@ def get_wishlist():
 @jwt_required()
 def get_all_wishlists():
     wishlist = Wishlist.get_all_wishlists()
+    print(wishlist)
     return jsonify(wishlist), 200
 
 
@@ -105,5 +120,5 @@ def initialisation():
 
 
 if __name__ == '__main__':
-    #initialisation()
+    initialisation()
     app.run(debug = True)

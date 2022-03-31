@@ -28,7 +28,7 @@ def create_GiftsTable():
 def delete_GiftsTable():
     Gift.metadata.drop_all(engine)
 
-def add_Gift(id_wishlist, name, url, price, description, state, id_user_who_offer):
+def add_Gift(id_wishlist, name, url, price, description, state, id_user_who_offer=None):
 
     insert_stmt = GiftsTable.insert().values(
         id_wishlist=id_wishlist,
