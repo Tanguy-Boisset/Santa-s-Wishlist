@@ -68,6 +68,33 @@ def get_wishlist(id_creator):
     conn = engine.connect()
     results = conn.execute(query)
 
+    whist_list_dico = {}
+
+    for result in results:
+        whist_list_dico = {
+            "id":result[0],
+            "id_creator": result[1],
+            "name":result[2],
+            "hashed_url":result[3],
+            "description":result[4],
+        }
+
+    conn.close()
+    return whist_list_dico
+
+def get_all_wishlists():
+
+    query = select([
+        WishlistTable.c.id,
+        WishlistTable.c.id_creator,
+        WishlistTable.c.name,
+        WishlistTable.c.hashed_url,
+        WishlistTable.c.description,
+        ]).where().distinct()
+
+    conn = engine.connect()
+    results = conn.execute(query)
+
     whist_list_table = []
 
     for result in results:
