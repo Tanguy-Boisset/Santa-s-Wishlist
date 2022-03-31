@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 from config import engine
 import hashlib
+from models.User import get_name
 
 db = SQLAlchemy()
 
@@ -75,6 +76,7 @@ def get_wishlist(id_creator):
         whist_list_dico = {
             "id":result[0],
             "id_creator": result[1],
+            "name_creator": get_name(result[1]),
             "name":result[2],
             "hashed_url":result[3],
             "description":result[4],
@@ -102,6 +104,7 @@ def get_all_wishlists():
         whist_list_table.append({
             "id":result[0],
             "id_creator": result[1],
+            "name_creator": get_name(result[1]),
             "name":result[2],
             "hashed_url":result[3],
             "description":result[4],
@@ -119,7 +122,9 @@ def get_id_wishlist_from_id_user(id_user):
 
     conn = engine.connect()
     results = conn.execute(query)
-    id_wishlist = results.first()[0]
+    id_wishlist = None
+    for result in results:
+        id_wishlist = result[0]
     conn.close()
 
     return id_wishlist

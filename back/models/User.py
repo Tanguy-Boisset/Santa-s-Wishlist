@@ -63,6 +63,16 @@ def get_id(pseudo):
     return id
 
 
+def get_name(id):
+    query = select(userTable.c.name).where(userTable.c.id == id)
+    conn = engine.connect()
+    results = conn.execute(query)
+    name=None
+    for result in results:
+        name=result[0]
+    conn.close()
+    return name
+
 def check_password(id, password):
     query = select(userTable.c.password).where(userTable.c.id == id)
     conn = engine.connect()

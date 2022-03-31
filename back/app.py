@@ -2,7 +2,7 @@ import hashlib
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, redirect, jsonify, make_response
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 from config import DATABASE_CONFIG, JWT_SECRET_KEY
 
@@ -73,18 +73,50 @@ def add_gift():
 
     id_wishlist = Wishlist.get_id_wishlist_from_id_user(id_user)
     Gift.add_Gift(id_wishlist = id_wishlist, name=name, url=url, price=price, description=description, state=state)
-    return jsonify({"msg": "gift added to the wishlist ! "}), 200
 
+    resp = make_response(jsonify({"msg": "gift added to the wishlist ! "}))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
+    return resp, 200
 
 @app.route("/delete_gift", methods=["POST"])
 @jwt_required()
 def delete_gift():
     id_user = get_jwt_identity()
+    id_gift = request.json.get("id_gift_delete", None)
 
-    id_wishlist = Wishlist.get_id_wishlist_from_id_user(id_user)
-    Gift.add_Gift(id_wishlist = id_wishlist, name=name, url=url, price=price, description=description, state=state)
-    return jsonify({"msg": "gift added to the wishlist ! "}), 200
+    id_wishlist = Gift.get_id_wishlist_from_id_gift(id_gift)
+
+    if id_wishlist != Wishlist.get_id_wishlist_from_id_user(id_user):
+        return jsonify({"msg": "you don't have the right to delete this gift, it does not belong to you"}), 401
+
+    Gift.delete_gift(id_gift=id_gift)
+
+    resp = make_response(jsonify({"msg": "gift deteted ! "}))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+    return resp, 200
+
+
+@app.route("/get_gift_from_wishlist", methods=["POST"])
+@jwt_required()
+def get_gift_from_wishlist():
+    id_user = get_jwt_identity()
+    id_wishlist = request.json.get("id_wishlist", None)
+
+    if id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
+        oneself = True
+    else:
+        oneself = False
+
+    list_gifts = Gift.get_gifts(id_wishlist, oneself)
+    resp = make_response(jsonify(list_gifts))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+    return resp, 200
 
 
 @app.route("/get_wishlist", methods=["GET"])
@@ -92,13 +124,16 @@ def delete_gift():
 def get_wishlist():
     id = get_jwt_identity()
     wishlist = Wishlist.get_wishlist(id)
-    return jsonify(wishlist), 200
+    resp = make_response(jsonify(wishlist))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp, 200
+
 
 @app.route("/get_all_wishlists", methods=["GET"])
 @jwt_required()
 def get_all_wishlists():
     wishlist = Wishlist.get_all_wishlists()
-    print(wishlist)
     return jsonify(wishlist), 200
 
 
@@ -106,7 +141,10 @@ def get_all_wishlists():
 @jwt_required()
 def get_id():
     current_id = get_jwt_identity()
-    return jsonify(logged_in_as=current_id), 200
+    resp = make_response(jsonify(current_id))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp, 200
 
 
 def initialisation():
