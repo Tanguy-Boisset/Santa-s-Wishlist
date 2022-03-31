@@ -41,8 +41,9 @@ def login():
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    pseudo = request.json.get("pseudo", None)
+
     name = request.json.get("name", None)
+    pseudo = request.json.get("pseudo", None)
     surname = request.json.get("surname", None)
     password = request.json.get("password", None)
 
@@ -54,19 +55,27 @@ def signup():
         User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
         id = User.get_id(pseudo)
 
-        access_token = create_access_token(identity=id)
-        return jsonify(access_token=access_token), 200
+    access_token = create_access_token(identity=id)
+    return jsonify(access_token=access_token), 200
 
 
 @app.route("/add_wishlist", methods=["POST"])
 @jwt_required()
-def get_wishlist():
+def add_wishlist():
     id = get_jwt_identity()
     name = request.json.get("name", None)
     description = request.json.get("description", None)
-    date = request.json.get("date", None)
-    Wishlist.add_Wishlist(id_creator = id, name=name, description=description, date=date)
+
+    Wishlist.add_Wishlist(id_creator = id, name=name, description=description)
     return jsonify({"msg": "wishlist created"}), 200
+
+
+@app.route("/get_wishlist", methods=["GET"])
+@jwt_required()
+def get_wishlist():
+    id = get_jwt_identity()
+    wishlist = Wishlist.get_wishlist(id)
+    return jsonify({"msg": wishlist}), 200
 
 
 @app.route("/getid", methods=["GET"])
@@ -87,5 +96,5 @@ def initialisation():
 
 
 if __name__ == '__main__':
-    #initialisation()
+    initialisation()
     app.run(debug = True)
