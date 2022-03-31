@@ -3,6 +3,8 @@ from sqlalchemy.sql import select
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 from config import engine
+import hashlib
+from models.User import get_name
 
 db = SQLAlchemy()
 
@@ -23,7 +25,7 @@ def delete_WishlistTable():
 
 def add_Wishlist(id_creator, name, description):
 
-    hashed_url = generate_password_hash(f"{id_creator}{name}{description}", method='sha256')
+    hashed_url = hashlib.md5(f"{id_creator}{name}{description}".encode()).hexdigest()
 
     insert_stmt = WishlistTable.insert().values(
         id_creator=id_creator,
@@ -74,6 +76,7 @@ def get_wishlist(id_creator):
         whist_list_dico = {
             "id":result[0],
             "id_creator": result[1],
+            "name_creator": get_name(result[1]),
             "name":result[2],
             "hashed_url":result[3],
             "description":result[4],
@@ -101,6 +104,7 @@ def get_all_wishlists():
         whist_list_table.append({
             "id":result[0],
             "id_creator": result[1],
+            "name_creator": get_name(result[1]),
             "name":result[2],
             "hashed_url":result[3],
             "description":result[4],
@@ -108,3 +112,19 @@ def get_all_wishlists():
 
     conn.close()
     return whist_list_table
+
+
+def get_id_wishlist_from_id_user(id_user):
+
+    query = select([
+        WishlistTable.c.id,
+        ]).where(WishlistTable.c.id_creator == id_user).distinct()
+
+    conn = engine.connect()
+    results = conn.execute(query)
+    id_wishlist = None
+    for result in results:
+        id_wishlist = result[0]
+    conn.close()
+
+    return id_wishlist
