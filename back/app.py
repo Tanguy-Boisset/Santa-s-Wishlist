@@ -31,13 +31,13 @@ def login():
     if User.get_id(pseudo) is None:
         return jsonify({"msg": "Pseudo is not in database"}), 401
 
+
+    id = User.get_id(pseudo)
+    if not User.check_password(id, password):
+        return jsonify({"msg": "Bad password"}), 401
     else:
-        id = User.get_id(pseudo)
-        if not User.check_password(id, password):
-            return jsonify({"msg": "Bad password"}), 401
-        else:
-            access_token = create_access_token(identity=id)
-            return jsonify(access_token=access_token), 200
+        access_token = create_access_token(identity=id)
+        return jsonify(access_token=access_token), 200
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -51,23 +51,26 @@ def signup():
         return jsonify({"msg": "Pseudo is already in Database"}), 401
     elif len(password) <= 5:
         return jsonify({"msg": "Password too short"}), 401
-    else:
-        User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
-        id = User.get_id(pseudo)
+
+    User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
+    id = User.get_id(pseudo)
+
+
+    Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
 
     access_token = create_access_token(identity=id)
     return jsonify(access_token=access_token), 200
 
 
-@app.route("/add_wishlist", methods=["POST"])
-@jwt_required()
-def add_wishlist():
-    id = get_jwt_identity()
-    name = request.json.get("name", None)
-    description = request.json.get("description", None)
+# @app.route("/add_wishlist", methods=["POST"])
+# @jwt_required()
+# def add_wishlist():
+#     id = get_jwt_identity()
+#     name = request.json.get("name", None)
+#     description = request.json.get("description", None)
 
-    Wishlist.add_Wishlist(id_creator = id, name=name, description=description)
-    return jsonify({"msg": "wishlist created"}), 200
+#     Wishlist.add_Wishlist(id_creator = id, name=name, description=description)
+#     return jsonify({"msg": "wishlist created"}), 200
 
 
 @app.route("/get_wishlist", methods=["GET"])
