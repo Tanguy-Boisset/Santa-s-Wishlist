@@ -1,8 +1,9 @@
 import hashlib
+import json
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, redirect, jsonify, make_response
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 from config import DATABASE_CONFIG, JWT_SECRET_KEY
 
@@ -21,7 +22,10 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World'
+    resp=make_response('Hello World')
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -41,25 +45,49 @@ def login():
 
 @app.route("/signup", methods=["POST"])
 def signup():
+    
+    dataStr = request.data.decode('utf-8')
+    data = json.loads(dataStr)
+    # print('COUCOU')
+    # print(data)
 
-    name = request.json.get("name", None)
-    pseudo = request.json.get("pseudo", None)
-    surname = request.json.get("surname", None)
-    password = request.json.get("password", None)
+    # name = request.json.get("name", None)
+    # pseudo = request.json.get("pseudo", None)
+    # surname = request.json.get("surname", None)
+    # password = request.json.get("password", None)
+
+
+    name = data["name"]
+    pseudo = data["pseudo"]
+    surname = data["surname"]
+    password = data["password"]
 
     if User.get_id(pseudo) is not None:
-        return jsonify({"msg": "Pseudo is already in Database"}), 401
+        resp = make_response(jsonify({"msg": "Pseudo is already in Database"}))
+        status_code = 401
     elif len(password) <= 5:
-        return jsonify({"msg": "Password too short"}), 401
+        resp = make_response(jsonify({"msg": "Password too short"}))
+        status_code = 401
+    else:
+        User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
+        id = User.get_id(pseudo)
 
-    User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
-    id = User.get_id(pseudo)
 
+        Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
 
-    Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
+        access_token = create_access_token(identity=id)
 
-    access_token = create_access_token(identity=id)
-    return jsonify(access_token=access_token), 200
+        resp = make_response(jsonify(access_token=access_token))
+        status_code = 200
+
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    resp.headers['Access-Control-Allow-Headers'] = '*'
+    
+
+    print(resp.headers)
+
+    return resp, status_code
 
 
 # @app.route("/add_wishlist", methods=["POST"])
