@@ -13,7 +13,7 @@ function Navbar() {
             <Link to="/wishlist">My Wishlist</Link>
           </li>
           <li>
-            <Link to="/">Friends' Wishlists</Link>
+            <Link to="/wishlist-list">Friends' Wishlists</Link>
           </li>
           <li>
             <Link to="/login">Log in</Link>
