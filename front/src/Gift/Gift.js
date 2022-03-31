@@ -8,7 +8,8 @@ function Gift(gift) {
             <h5 className="giftName">{gift.name}</h5>
             <p className="giftPrice">{gift.price}€</p>
             <p className="giftDesc">{gift.description}</p>
-            <a href={gift.link} target="_blank" className="giftLink">{linkText}</a>
+            <a href={gift.link} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
+            <div className="imgHolder"><img className="deleteImg" src="../../img/bin.png" alt="delete_gift"/></div>
         </div>
     );
 }
@@ -34,7 +35,7 @@ function AddGift() {
                 <label className="labelAddGift" htmlFor="giftAddLink">Lien : </label>
                 <input className="inputAddGift" type="url" id="giftAddLink" name="giftAddLink"/>
             </div>
-            <a className="button" id="AddGiftSubmit">Ajouter ce cadeau</a>
+            <button className="button" id="AddGiftSubmit">Ajouter ce cadeau</button>
             <p id="errorAddGift"></p>
             </form>
         </div>
