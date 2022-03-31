@@ -2,7 +2,7 @@ import hashlib
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, redirect, jsonify, make_response
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 from config import DATABASE_CONFIG, JWT_SECRET_KEY
 
@@ -81,10 +81,13 @@ def get_wishlist():
     return jsonify(wishlist), 200
 
 @app.route("/get_all_wishlists", methods=["GET"])
-@jwt_required()
+#@jwt_required()
 def get_all_wishlists():
     wishlist = Wishlist.get_all_wishlists()
-    return jsonify(wishlist), 200
+    resp = make_response(jsonify(wishlist))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp
 
 
 @app.route("/getid", methods=["GET"])

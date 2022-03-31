@@ -90,7 +90,7 @@ def get_all_wishlists():
         WishlistTable.c.name,
         WishlistTable.c.hashed_url,
         WishlistTable.c.description,
-        ]).where().distinct()
+        ])
 
     conn = engine.connect()
     results = conn.execute(query)

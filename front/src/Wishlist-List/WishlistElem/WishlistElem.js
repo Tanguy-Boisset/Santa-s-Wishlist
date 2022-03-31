@@ -1,12 +1,12 @@
 import './WishlistElem.css';
 
-function WishlistElem(wishlist) {
+function WishlistElem(props) {
     return (
-        <a href={wishlist.hash} className="wishlistElemLink">
+        <a href={props.hash} className="wishlistElemLink">
         <div className="wishlistElem">
-            <h5 className="wishlistElemName">{wishlist.name}</h5>
-            <p className="wishlistElemDate">Créée par {wishlist.creatorName}</p>
-            <p className="wishlistElemDesc">{wishlist.description}</p>
+            <h5 className="wishlistElemName">{props.name}</h5>
+            <p className="wishlistElemDate">Créée par {props.id_creator}</p>
+            <p className="wishlistElemDesc">{props.description}</p>
         </div>
         </a>
     );
