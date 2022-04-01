@@ -7,6 +7,7 @@ function Wishlist() {
     const location = useLocation().pathname.slice(10);
 
     let [my_wishlist, setDataWishlist] = useState([]);
+    let [my_gifts, setDataGifts] = useState([]);
 
     useEffect(() => {
         const urlWishlist = "http://localhost:5000/get_wishlist";
@@ -23,9 +24,7 @@ function Wishlist() {
             setDataWishlist(jsonWishlist);
             }
         fetchDataWishlist();
-    }, []);
-
-    let [my_gifts, setDataGifts] = useState([]);
+    }, [my_gifts]);
 
     useEffect(() => {
         const urlGifts = "http://localhost:5000/get_gift_from_wishlist";
