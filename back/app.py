@@ -1,4 +1,5 @@
 import hashlib
+import json
 from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
@@ -30,8 +31,8 @@ def login():
     password = request.json.get("password", None)
 
     if User.get_id(pseudo) is None:
+        print(User.get_id(pseudo))
         return jsonify({"msg": "Pseudo is not in database"}), 401
-
 
     id = User.get_id(pseudo)
     if not User.check_password(id, password):
@@ -43,23 +44,40 @@ def login():
 @app.route("/signup", methods=["POST"])
 def signup():
 
-    name = request.json.get("name", None)
-    pseudo = request.json.get("pseudo", None)
-    surname = request.json.get("surname", None)
-    password = request.json.get("password", None)
+    dataStr = request.data.decode('utf-8')
+    data = json.loads(dataStr)
+
+    name = data["name"]
+    pseudo = data["pseudo"]
+    surname = data["surname"]
+    password = data["password"]
 
     if User.get_id(pseudo) is not None:
-        return jsonify({"msg": "Pseudo is already in Database"}), 401
+        resp = make_response(jsonify({"msg": "Pseudo is already in Database"}))
+        status_code = 401
     elif len(password) <= 5:
-        return jsonify({"msg": "Password too short"}), 401
+        resp = make_response(jsonify({"msg": "Password too short"}))
+        status_code = 401
+    else:
+        User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
+        id = User.get_id(pseudo)
 
-    User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
-    id = User.get_id(pseudo)
 
-    Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
+        Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
 
-    access_token = create_access_token(identity=id)
-    return jsonify(access_token=access_token), 200
+        access_token = create_access_token(identity=id)
+
+        resp = make_response(jsonify(access_token=access_token))
+        status_code = 200
+
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    resp.headers['Access-Control-Allow-Headers'] = '*'
+    
+
+    # print(resp.headers)
+
+    return resp, status_code
 
 
 @app.route("/add_gift", methods=["POST"])
@@ -155,6 +173,41 @@ def get_id():
     resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
+
+
+@app.route("/attribute_gift", methods=["POST"])
+@jwt_required()
+def attribute_gift():
+    id_user = get_jwt_identity()
+    id_gift = request.json.get("id_gift", None)
+
+    id_wishlist = Gift.get_id_wishlist_from_id_gift(id_gift)
+
+    if id_wishlist is None:
+
+        resp = make_response(jsonify({"msg": "This gift does not exists"}))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+        return resp, 401
+
+    elif id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
+
+        resp = make_response(jsonify({"msg": "You don't have the right to attribute your own gifts"}))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+
+        return resp, 401
+    else:
+        Gift.attribute_gift(id_gift, id_user)
+
+        resp = make_response(jsonify({"msg": "Gift Attributed"}))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+        return resp, 200
+
 
 
 def initialisation():
