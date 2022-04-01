@@ -63,20 +63,22 @@ def signup():
 
 
 @app.route("/add_gift", methods=["POST"])
-@jwt_required()
+@cross_origin()
+#@jwt_required()
 def add_gift():
-    id_user = get_jwt_identity()
+    #id_user = get_jwt_identity()
     name = request.json.get("name", None)
     url = request.json.get("url", None)
     price = request.json.get("price", None)
-    description = request.json.get("name", None)
+    description = request.json.get("description", None)
+    hashed_url = request.json.get("hashed_url", None)
     state = "not-attribute"
 
-    id_wishlist = Wishlist.get_id_wishlist_from_id_user(id_user)
-    Gift.add_Gift(id_wishlist = id_wishlist, name=name, url=url, price=price, description=description, state=state)
+    wishlist = Wishlist.get_wishlist(hashed_url)
+    Gift.add_Gift(wishlist['id'], name=name, url=url, price=price, description=description, state=state)
 
     resp = make_response(jsonify({"msg": "gift added to the wishlist ! "}))
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
     return resp, 200
