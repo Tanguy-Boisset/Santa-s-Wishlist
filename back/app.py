@@ -1,4 +1,5 @@
 import hashlib
+import json
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
@@ -42,23 +43,40 @@ def login():
 @app.route("/signup", methods=["POST"])
 def signup():
 
-    name = request.json.get("name", None)
-    pseudo = request.json.get("pseudo", None)
-    surname = request.json.get("surname", None)
-    password = request.json.get("password", None)
+    dataStr = request.data.decode('utf-8')
+    data = json.loads(dataStr)
 
-    if User.get_id(pseudo) != None:
-        return jsonify({"msg": "Pseudo is already in Database"}), 401
+    name = data["name"]
+    pseudo = data["pseudo"]
+    surname = data["surname"]
+    password = data["password"]
+
+    if User.get_id(pseudo) is not None:
+        resp = make_response(jsonify({"msg": "Pseudo is already in Database"}))
+        status_code = 401
     elif len(password) <= 5:
-        return jsonify({"msg": "Password too short"}), 401
+        resp = make_response(jsonify({"msg": "Password too short"}))
+        status_code = 401
+    else:
+        User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
+        id = User.get_id(pseudo)
 
-    User.add_user(pseudo=pseudo, name=name, surname=surname, plain_password=password)
-    id = User.get_id(pseudo)
 
-    Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
+        Wishlist.add_Wishlist(id_creator = id, name=f"Wishlist of {pseudo}", description="Here is my wishlist !")
 
-    access_token = create_access_token(identity=id)
-    return jsonify(access_token=access_token), 200
+        access_token = create_access_token(identity=id)
+
+        resp = make_response(jsonify(access_token=access_token))
+        status_code = 200
+
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    resp.headers['Access-Control-Allow-Headers'] = '*'
+    
+
+    # print(resp.headers)
+
+    return resp, status_code
 
 
 @app.route("/add_gift", methods=["POST"])
