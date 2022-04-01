@@ -3,20 +3,34 @@ import './Gift.css';
 
 let linkText = "Lien vers mon cadeau -->";
 
-function Gift(gift) {
+function Gift(gift,func,globVar) {
+    const location = useLocation().pathname.slice(10);
+
+    function postDeleteGift() {
+        const rawResponse = fetch('http://localhost:5000/delete_gift', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+        body: JSON.stringify({
+            id_gift_delete: gift.id
+            })
+        }).then(() => func(!globVar));
+    }
     return (
         <div className="gift">
             <h5 className="giftName">{gift.name}</h5>
             <p className="giftPrice">{gift.price}€</p>
             <p className="giftDesc">{gift.description}</p>
             <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
-            <div className="imgHolder"><img className="deleteImg" src="../../img/bin.png" alt="delete_gift"/></div>
+            <div className="imgHolder" onClick={postDeleteGift}><img className="deleteImg" src="../../img/bin.png" alt="delete_gift"/></div>
             <div className="imgHolder2"><img className="acceptImg" src="../../img/gift.png" alt="accept_gift"/></div>
         </div>
     );
 }
 
-function AddGift() {
+function AddGift({giftFunc, giftVar}) {
     const location = useLocation().pathname.slice(10);
 
     function postNewGift() {
@@ -33,7 +47,7 @@ function AddGift() {
             description: document.getElementById("giftAddDesc").value,
             hashed_url: location
             })
-        });
+        }).then(() => giftFunc(!giftVar));
     }
 
     return (

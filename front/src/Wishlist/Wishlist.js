@@ -8,6 +8,7 @@ function Wishlist() {
 
     let [my_wishlist, setDataWishlist] = useState([]);
     let [my_gifts, setDataGifts] = useState([]);
+    let [updateGifts, updateGiftsFunc] = useState(true);
 
     useEffect(() => {
         const urlWishlist = "http://localhost:5000/get_wishlist";
@@ -24,7 +25,7 @@ function Wishlist() {
             setDataWishlist(jsonWishlist);
             }
         fetchDataWishlist();
-    }, [my_gifts]);
+    }, []);
 
     useEffect(() => {
         const urlGifts = "http://localhost:5000/get_gift_from_wishlist";
@@ -41,7 +42,7 @@ function Wishlist() {
             setDataGifts(jsonGifts);
             }
         fetchDataGifts();
-    }, [my_wishlist]);
+    }, [my_wishlist, updateGifts]);
 
     return (
         <div className="wishlist">
@@ -51,9 +52,9 @@ function Wishlist() {
                 <h3>{my_wishlist.description}</h3>
                 <ul className="scrollbar">
                     {my_gifts.map(function(cadeau){
-            		    return <li key={cadeau.id}>{Gift(cadeau)}</li>;
+            		    return <li key={cadeau.id}>{Gift(cadeau,updateGiftsFunc,updateGifts)}</li>;
           		})}
-                <AddGift/>
+                <AddGift giftFunc={updateGiftsFunc} giftVar={updateGifts}/>
                 </ul>
 
 	        </div>

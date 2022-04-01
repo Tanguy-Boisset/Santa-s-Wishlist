@@ -84,20 +84,21 @@ def add_gift():
     return resp, 200
 
 @app.route("/delete_gift", methods=["POST"])
-@jwt_required()
+@cross_origin()
+#@jwt_required()
 def delete_gift():
-    id_user = get_jwt_identity()
+    #id_user = get_jwt_identity()
     id_gift = request.json.get("id_gift_delete", None)
 
     id_wishlist = Gift.get_id_wishlist_from_id_gift(id_gift)
 
-    if id_wishlist != Wishlist.get_id_wishlist_from_id_user(id_user):
-        return jsonify({"msg": "you don't have the right to delete this gift, it does not belong to you"}), 401
+    #if id_wishlist != Wishlist.get_id_wishlist_from_id_user(id_user):
+    #    return jsonify({"msg": "you don't have the right to delete this gift, it does not belong to you"}), 401
 
     Gift.delete_gift(id_gift=id_gift)
 
     resp = make_response(jsonify({"msg": "gift deteted ! "}))
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
     return resp, 200
