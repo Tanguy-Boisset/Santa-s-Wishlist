@@ -126,8 +126,8 @@ def get_gift_from_wishlist():
 #@jwt_required()
 def get_wishlist():
     #id_user = get_jwt_identity()
-    id_wishlist = request.json.get("id_wishlist", None)
-    wishlist = Wishlist.get_wishlist(id_wishlist)
+    hashed_url = request.json.get("hashed_url", None)
+    wishlist = Wishlist.get_wishlist(hashed_url)
     resp = make_response(jsonify(wishlist))
     #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'

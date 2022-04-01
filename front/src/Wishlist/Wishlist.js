@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Wishlist.css';
 import Gift, {AddGift} from '../Gift/Gift';
 
-function Wishlist(id_wishlist=1) {
+function Wishlist() {
+    const location = useLocation().pathname.slice(10);
+
     let [my_wishlist, setDataWishlist] = useState([]);
 
     useEffect(() => {
@@ -14,10 +17,9 @@ function Wishlist(id_wishlist=1) {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({id_wishlist: 1})
+                body: JSON.stringify({hashed_url: location})
             });
             const jsonWishlist = await responseWishlist.json();
-            console.log(jsonWishlist);
             setDataWishlist(jsonWishlist);
             }
         fetchDataWishlist();
@@ -34,15 +36,13 @@ function Wishlist(id_wishlist=1) {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({id_wishlist: 1})
+                body: JSON.stringify({id_wishlist: my_wishlist.id})
             });
             const jsonGifts = await responseGifts.json();
-            console.log(jsonGifts);
             setDataGifts(jsonGifts);
             }
         fetchDataGifts();
-    }, []);
-
+    }, [my_wishlist]);
 
     return (
         <div className="wishlist">

@@ -57,15 +57,14 @@ def update_Wishlist(id, id_creator, name, description):
 def is_in_database(id):
     return bool(WishlistTable.query.filter_by(id=id).first())
 
-def get_wishlist(id_creator):
-
+def get_wishlist(hashed_url):
     query = select([
         WishlistTable.c.id,
         WishlistTable.c.id_creator,
         WishlistTable.c.name,
         WishlistTable.c.hashed_url,
         WishlistTable.c.description,
-        ]).where(WishlistTable.c.id_creator == id_creator).distinct()
+        ]).where(WishlistTable.c.hashed_url == hashed_url).distinct()
 
     conn = engine.connect()
     results = conn.execute(query)
