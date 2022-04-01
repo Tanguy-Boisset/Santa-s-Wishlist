@@ -137,4 +137,16 @@ def get_gifts(id_wishlist, oneself=False):
     return list_gifts
 
 
+def attribute_gift(id_gift, id_user):
+    update = GiftsTable.update().values(
+            state="attributed",
+            id_user_who_offer =id_user
+            ).\
+        where(GiftsTable.c.id == id_gift)
+
+    conn = engine.connect()
+    conn.execute(update)
+    conn.close()
+
+
 
