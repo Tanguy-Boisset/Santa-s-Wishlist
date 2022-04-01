@@ -22,7 +22,7 @@ export default function Main() {
         <Theme/>
         <Routes>
             <Route path='/' element={<Home/>} />
-            <Route path='/wishlist' element={<Wishlist/>} />
+            <Route path='/wishlist/:hash' element={<Wishlist/>} />
             <Route path='/wishlist-list' element={<WishlistList/>} />
             <Route path='/login' element={<Login/>} />
             <Route path='/signup' element={<Signup/>} />

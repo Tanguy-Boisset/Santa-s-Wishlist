@@ -1,54 +1,60 @@
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Wishlist.css';
 import Gift, {AddGift} from '../Gift/Gift';
 
-// Data exported from Database
-let cadeau1 = {
-    'id': 0,
-    'name' : 'Un stage',
-    'description' : 'Nolwenn bordel tu fous quoi !?',
-    'link' : 'https://www.amazon.fr/Nintendo-Switch-avec-paire-Rouge/dp/B07WKNQ8JT/',
-    'price' : 5,
-    'chosen': true
-};
-
-let cadeau2 = {
-    'id': 1,
-    'name' : 'Une validation en OS',
-    'description' : 'Stp, pas les rattrapages',
-    'link' : 'https://www.amazon.fr/Nintendo-Switch-avec-paire-Rouge/dp/B07WKNQ8JT/',
-    'price' : 0,
-    'chosen': true
-};
-
-let cadeau3 = {
-    'id': 2,
-    'name' : 'Nintendo Switch',
-    'description' : 'En tant que grand gamer, j\'ai besoin d\'une Switch',
-    'link' : 'https://www.amazon.fr/Nintendo-Switch-avec-paire-Rouge/dp/B07WKNQ8JT/',
-    'price' : 270,
-    'chosen': true
-};
-
-let myWishlist = {
-    'id': 0,
-    'name': 'La Wishlist de Tanguy :D',
-    'description': 'Voilà tous les cadeaux que j\'adoooorerais avoir pour Noël !! :D',
-    'cadeaux': [cadeau1,cadeau2,cadeau3,cadeau3,cadeau3]
-};
-
-
 function Wishlist() {
+    const location = useLocation().pathname.slice(10);
+
+    let [my_wishlist, setDataWishlist] = useState([]);
+    let [my_gifts, setDataGifts] = useState([]);
+    let [updateGifts, updateGiftsFunc] = useState(true);
+
+    useEffect(() => {
+        const urlWishlist = "http://localhost:5000/get_wishlist";
+        const fetchDataWishlist = async () => {
+            const responseWishlist = await fetch(urlWishlist,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({hashed_url: location})
+            });
+            const jsonWishlist = await responseWishlist.json();
+            setDataWishlist(jsonWishlist);
+            }
+        fetchDataWishlist();
+    }, []);
+
+    useEffect(() => {
+        const urlGifts = "http://localhost:5000/get_gift_from_wishlist";
+        const fetchDataGifts = async () => {
+            const responseGifts = await fetch(urlGifts,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id_wishlist: my_wishlist.id})
+            });
+            const jsonGifts = await responseGifts.json();
+            setDataGifts(jsonGifts);
+            }
+        fetchDataGifts();
+    }, [my_wishlist, updateGifts]);
+
     return (
         <div className="wishlist">
         <div className="center-top">
             <div className="text-center">
-                <h1>{myWishlist.name}</h1>
-                <h3>{myWishlist.description}</h3>
+                <h1>{my_wishlist.name}</h1>
+                <h3>{my_wishlist.description}</h3>
                 <ul className="scrollbar">
-                    {myWishlist.cadeaux.map(function(cadeau){
-            		    return <li key={cadeau.id}>{Gift(cadeau)}</li>;
+                    {my_gifts.map(function(cadeau){
+            		    return <li key={cadeau.id}>{Gift(cadeau,updateGiftsFunc,updateGifts)}</li>;
           		})}
-                <AddGift/>
+                <AddGift giftFunc={updateGiftsFunc} giftVar={updateGifts}/>
                 </ul>
 
 	        </div>
