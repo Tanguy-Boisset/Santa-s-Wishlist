@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import './Wishlist.css';
 import Gift, {AddGift} from '../Gift/Gift';
 
@@ -37,7 +38,28 @@ let myWishlist = {
 };
 
 
-function Wishlist() {
+function Wishlist(id_wishlist=1) {
+    let [my_wishlist, setDataWishlist] = useState([]);
+
+    useEffect(() => {
+        const urlWishlist = "http://localhost:5000/get_wishlist";
+        const fetchDataWishlist = async () => {
+            const responseWishlist = await fetch(urlWishlist,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id_wishlist: 1})
+            });
+            const jsonWishlist = await responseWishlist.json();
+            console.log(jsonWishlist);
+            setDataWishlist(jsonWishlist);
+            }
+        fetchDataWishlist();
+    }, []);
+
+
     return (
         <div className="wishlist">
         <div className="center-top">

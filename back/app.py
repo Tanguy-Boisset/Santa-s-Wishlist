@@ -1,5 +1,5 @@
 import hashlib
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
 from flask import Flask, request, redirect, jsonify, make_response
@@ -11,7 +11,8 @@ import time
 from models import User, Gift, Wishlist
 app = Flask(__name__)
 
-#CORS(app)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONFIG
@@ -119,13 +120,15 @@ def get_gift_from_wishlist():
     return resp, 200
 
 
-@app.route("/get_wishlist", methods=["GET"])
-@jwt_required()
+@app.route("/get_wishlist", methods=["POST"])
+@cross_origin()
+#@jwt_required()
 def get_wishlist():
-    id = get_jwt_identity()
-    wishlist = Wishlist.get_wishlist(id)
+    #id_user = get_jwt_identity()
+    id_wishlist = request.json.get("id_wishlist", None)
+    wishlist = Wishlist.get_wishlist(id_wishlist)
     resp = make_response(jsonify(wishlist))
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
@@ -137,7 +140,7 @@ def get_all_wishlists():
     resp = make_response(jsonify(wishlist))
     resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
-    return resp
+    return resp, 200
 
 
 @app.route("/getid", methods=["GET"])
