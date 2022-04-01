@@ -102,15 +102,16 @@ def delete_gift():
 
 
 @app.route("/get_gift_from_wishlist", methods=["POST"])
-@jwt_required()
+#@jwt_required()
 def get_gift_from_wishlist():
-    id_user = get_jwt_identity()
+    #id_user = get_jwt_identity()
     id_wishlist = request.json.get("id_wishlist", None)
 
-    if id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
-        oneself = True
-    else:
-        oneself = False
+    #if id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
+    #    oneself = True
+    #else:
+    #    oneself = False
+    oneself = True
 
     list_gifts = Gift.get_gifts(id_wishlist, oneself)
     resp = make_response(jsonify(list_gifts))

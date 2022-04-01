@@ -8,7 +8,7 @@ function Gift(gift) {
             <h5 className="giftName">{gift.name}</h5>
             <p className="giftPrice">{gift.price}€</p>
             <p className="giftDesc">{gift.description}</p>
-            <a href={gift.link} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
+            <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
             <div className="imgHolder"><img className="deleteImg" src="../../img/bin.png" alt="delete_gift"/></div>
             <div className="imgHolder2"><img className="acceptImg" src="../../img/gift.png" alt="accept_gift"/></div>
         </div>

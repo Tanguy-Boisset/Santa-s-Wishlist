@@ -59,15 +59,35 @@ function Wishlist(id_wishlist=1) {
         fetchDataWishlist();
     }, []);
 
+    let [my_gifts, setDataGifts] = useState([]);
+
+    useEffect(() => {
+        const urlGifts = "http://localhost:5000/get_gift_from_wishlist";
+        const fetchDataGifts = async () => {
+            const responseGifts = await fetch(urlGifts,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id_wishlist: 1})
+            });
+            const jsonGifts = await responseGifts.json();
+            console.log(jsonGifts);
+            setDataGifts(jsonGifts);
+            }
+        fetchDataGifts();
+    }, []);
+
 
     return (
         <div className="wishlist">
         <div className="center-top">
             <div className="text-center">
-                <h1>{myWishlist.name}</h1>
-                <h3>{myWishlist.description}</h3>
+                <h1>{my_wishlist.name}</h1>
+                <h3>{my_wishlist.description}</h3>
                 <ul className="scrollbar">
-                    {myWishlist.cadeaux.map(function(cadeau){
+                    {my_gifts.map(function(cadeau){
             		    return <li key={cadeau.id}>{Gift(cadeau)}</li>;
           		})}
                 <AddGift/>
