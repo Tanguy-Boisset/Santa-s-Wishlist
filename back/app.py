@@ -29,8 +29,8 @@ def login():
     password = request.json.get("password", None)
 
     if User.get_id(pseudo) is None:
+        print(User.get_id(pseudo))
         return jsonify({"msg": "Pseudo is not in database"}), 401
-
 
     id = User.get_id(pseudo)
     if not User.check_password(id, password):
@@ -47,7 +47,7 @@ def signup():
     surname = request.json.get("surname", None)
     password = request.json.get("password", None)
 
-    if User.get_id(pseudo) is not None:
+    if User.get_id(pseudo) != None:
         return jsonify({"msg": "Pseudo is already in Database"}), 401
     elif len(password) <= 5:
         return jsonify({"msg": "Password too short"}), 401
@@ -89,7 +89,11 @@ def delete_gift():
     id_wishlist = Gift.get_id_wishlist_from_id_gift(id_gift)
 
     if id_wishlist != Wishlist.get_id_wishlist_from_id_user(id_user):
-        return jsonify({"msg": "you don't have the right to delete this gift, it does not belong to you"}), 401
+
+        resp = make_response(jsonify({"msg": "You don't have the right to delete this gift, it does not belong to you"}))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+        return resp, 401
 
     Gift.delete_gift(id_gift=id_gift)
 
@@ -150,6 +154,41 @@ def get_id():
     return resp, 200
 
 
+@app.route("/attribute_gift", methods=["POST"])
+@jwt_required()
+def attribute_gift():
+    id_user = get_jwt_identity()
+    id_gift = request.json.get("id_gift", None)
+
+    id_wishlist = Gift.get_id_wishlist_from_id_gift(id_gift)
+
+    if id_wishlist is None:
+
+        resp = make_response(jsonify({"msg": "This gift does not exists"}))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+        return resp, 401
+
+    elif id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
+
+        resp = make_response(jsonify({"msg": "You don't have the right to attribute your own gifts"}))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+
+        return resp, 401
+    else:
+        Gift.attribute_gift(id_gift, id_user)
+
+        resp = make_response(jsonify({"msg": "Gift Attributed"}))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+
+        return resp, 200
+
+
+
 def initialisation():
     User.delete_user_table()
     Gift.delete_GiftsTable()
@@ -161,5 +200,5 @@ def initialisation():
 
 
 if __name__ == '__main__':
-    initialisation()
+    #initialisation()
     app.run(debug = True)
