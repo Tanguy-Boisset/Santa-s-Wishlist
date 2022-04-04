@@ -2,9 +2,9 @@ import { useLocation } from 'react-router-dom';
 import './Gift.css';
 
 let linkText = "Lien vers mon cadeau -->";
+const isItMyWishlist = false;
 
 function Gift(gift,func,globVar) {
-    const location = useLocation().pathname.slice(10);
 
     function postDeleteGift() {
         const rawResponse = fetch('http://localhost:5000/delete_gift', {
@@ -18,16 +18,65 @@ function Gift(gift,func,globVar) {
             })
         }).then(() => func(!globVar));
     }
-    return (
-        <div className="gift">
-            <h5 className="giftName">{gift.name}</h5>
-            <p className="giftPrice">{gift.price}€</p>
-            <p className="giftDesc">{gift.description}</p>
-            <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
-            <div className="imgHolder" onClick={postDeleteGift}><img className="deleteImg" src="../../img/bin.png" alt="delete_gift"/></div>
-            <div className="imgHolder2"><img className="acceptImg" src="../../img/gift.png" alt="accept_gift"/></div>
-        </div>
-    );
+
+    function postAttributeGift() {
+        const rawResponse = fetch('http://localhost:5000/attribute_gift', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+        body: JSON.stringify({
+            id_gift: gift.id
+            })
+        }).then(() => func(!globVar));
+    }
+
+
+    function RenderButton(props) {
+        if (props.isItMyWishlist) {
+            return (
+                <div className="imgHolder" onClick={postDeleteGift}><img className="deleteImg" src="../../img/bin.png" alt="delete_gift"/></div>
+            );
+        }
+        else {
+            if (props.taken == "attributed") {
+                return (
+                    <div className="imgHolder2 taken"><img className="acceptImg" src="../../img/gift.png" alt="accept_gift"/></div>
+                );
+            }
+            else {
+                return (
+                    <div className="imgHolder2" onClick={postAttributeGift}><img className="acceptImg" src="../../img/gift.png" alt="accept_gift"/></div>
+                );
+            }
+            
+        }
+    }
+
+    if (!isItMyWishlist && gift.state == "attributed") {
+        return (
+            <div className="gift giftAttributed">
+                <h5 className="giftName">{gift.name}</h5>
+                <p className="giftPrice">{gift.price}€</p>
+                <p className="giftDesc">{gift.description}</p>
+                <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
+                <RenderButton isItMyWishlist={isItMyWishlist} taken={gift.state}/>
+            </div>
+        );
+    }
+    else {
+        return (
+            <div className="gift">
+                <h5 className="giftName">{gift.name}</h5>
+                <p className="giftPrice">{gift.price}€</p>
+                <p className="giftDesc">{gift.description}</p>
+                <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
+                <RenderButton isItMyWishlist={isItMyWishlist} taken={gift.state}/>
+            </div>
+        );
+    }
+
 }
 
 function AddGift({giftFunc, giftVar}) {
@@ -50,31 +99,38 @@ function AddGift({giftFunc, giftVar}) {
         }).then(() => giftFunc(!giftVar));
     }
 
-    return (
-        <div className="gift">
-            <h5 className="giftName">Ajouter un cadeau</h5>
-            <div id="addGift">
-            <div>
-                <label className="labelAddGift" htmlFor="giftAddName">Nom : </label>
-                <input className="inputAddGift" type="text" id="giftAddName" name="giftAddName" required/>
+    if (isItMyWishlist) {
+        return (
+            <div className="gift">
+                <h5 className="giftName">Ajouter un cadeau</h5>
+                <div id="addGift">
+                <div>
+                    <label className="labelAddGift" htmlFor="giftAddName">Nom : </label>
+                    <input className="inputAddGift" type="text" id="giftAddName" name="giftAddName" required/>
+                </div>
+                <div>
+                    <label className="labelAddGift" htmlFor="giftAddPrice">Prix (€): </label>
+                    <input className="inputAddGift" type="number" id="giftAddPrice" name="giftAddPrice"/>
+                </div>
+                <div>
+                    <label className="labelAddGift" htmlFor="giftAddDesc">Description : </label>
+                    <input className="inputAddGift" type="text" id="giftAddDesc" name="giftAddDesc"/>
+                </div>
+                <div>
+                    <label className="labelAddGift" htmlFor="giftAddLink">Lien : </label>
+                    <input className="inputAddGift" type="url" id="giftAddLink" name="giftAddLink"/>
+                </div>
+                <button className="button" id="AddGiftSubmit" onClick={postNewGift}>Ajouter ce cadeau</button>
+                <p id="errorAddGift"></p>
+                </div>
             </div>
-            <div>
-                <label className="labelAddGift" htmlFor="giftAddPrice">Prix (€): </label>
-                <input className="inputAddGift" type="number" id="giftAddPrice" name="giftAddPrice"/>
-            </div>
-            <div>
-                <label className="labelAddGift" htmlFor="giftAddDesc">Description : </label>
-                <input className="inputAddGift" type="text" id="giftAddDesc" name="giftAddDesc"/>
-            </div>
-            <div>
-                <label className="labelAddGift" htmlFor="giftAddLink">Lien : </label>
-                <input className="inputAddGift" type="url" id="giftAddLink" name="giftAddLink"/>
-            </div>
-            <button className="button" id="AddGiftSubmit" onClick={postNewGift}>Ajouter ce cadeau</button>
-            <p id="errorAddGift"></p>
-            </div>
-        </div>
-    );
+        );
+    }
+    else {
+        return null;
+    }
+
+    
 }
 
 export default Gift;
