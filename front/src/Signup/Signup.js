@@ -1,5 +1,5 @@
 import './Signup.css';
-import submitSignup from './lib.js';
+import submitSignup from './libSignup.js';
 
 
 
