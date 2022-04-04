@@ -23,8 +23,9 @@ async function grantToken(element, options){
         element.innerHTML=respJson.msg;
     }
     else{
-        // let token = respJson.access_token;
-
+        let token = respJson.access_token;
+        localStorage.setItem("santaToken", 'Bearer ' + token);
+        window.location.href = "/";
     }
         console.log(respRaw);
 }

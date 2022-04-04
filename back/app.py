@@ -221,5 +221,5 @@ def initialisation():
 
 
 if __name__ == '__main__':
-    #initialisation()
+    initialisation()
     app.run(debug = True)
