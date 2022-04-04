@@ -20,7 +20,7 @@ function Navbar() {
             <Link to="/login">Log in</Link>
           </li>
           <li>
-            <a onClick={logout}>Log out</a>
+            <a onClick={logout}><u>Log out</u></a>
           </li>
           <li>
             <Link to="/signup">Sign up</Link>
