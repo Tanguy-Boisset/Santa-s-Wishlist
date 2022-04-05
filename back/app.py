@@ -174,6 +174,17 @@ def get_id():
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
+@app.route("/getname", methods=["POST"])
+@cross_origin()
+#@jwt_required()
+def get_name():
+    #current_id = get_jwt_identity()
+    id = request.json.get("id", None)
+    user = User.get_name(id)
+    resp = make_response(jsonify(user))
+    #resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp, 200
 
 @app.route("/attribute_gift", methods=["POST"])
 @cross_origin()
@@ -201,7 +212,7 @@ def attribute_gift():
 
         return resp, 401
     else:
-        id_user = 99 # à changer
+        id_user = 1 # à changer
         Gift.attribute_gift(id_gift, id_user)
 
         resp = make_response(jsonify({"msg": "Gift Attributed"}))

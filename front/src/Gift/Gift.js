@@ -1,10 +1,13 @@
 import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import './Gift.css';
 
 let linkText = "Lien vers mon cadeau -->";
 const isItMyWishlist = false;
 
 function Gift(gift,func,globVar) {
+
+    console.log(gift);
 
     function postDeleteGift() {
         const rawResponse = fetch('http://localhost:5000/delete_gift', {
@@ -32,6 +35,20 @@ function Gift(gift,func,globVar) {
         }).then(() => func(!globVar));
     }
 
+    async function postNameFromId() {
+        const responseNameFromId = await fetch("http://localhost:5000/getname",{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: gift.id_user_who_offer
+                })
+        });
+        const jsonNameFromId = await responseNameFromId.json();
+        Array.from(document.getElementsByClassName(gift.id_user_who_offer)).map(e => e.innerText = jsonNameFromId);
+        };
 
     function RenderButton(props) {
         if (props.isItMyWishlist) {
@@ -42,7 +59,10 @@ function Gift(gift,func,globVar) {
         else {
             if (props.taken == "attributed") {
                 return (
+                    <div>
                     <div className="imgHolder2 taken"><img className="acceptImg" src="../../img/gift.png" alt="accept_gift"/></div>
+                    <p className="offreurDiv">Ce cadeau sera offert par : <span className={props.offreurId} onLoad={postNameFromId()}></span></p>
+                    </div>
                 );
             }
             else {
@@ -61,7 +81,7 @@ function Gift(gift,func,globVar) {
                 <p className="giftPrice">{gift.price}€</p>
                 <p className="giftDesc">{gift.description}</p>
                 <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
-                <RenderButton isItMyWishlist={isItMyWishlist} taken={gift.state}/>
+                <RenderButton isItMyWishlist={isItMyWishlist} taken={gift.state} offreurId={gift.id_user_who_offer}/>
             </div>
         );
     }
