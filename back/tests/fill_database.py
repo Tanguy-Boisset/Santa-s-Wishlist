@@ -41,8 +41,8 @@ data3 = {
     "description": "description",
 }
 
-request5 = requests.post(url+"/add_gift", headers=header, json=data3)
-print(request5.text)
+# request5 = requests.post(url+"/add_gift", headers=header, json=data3)
+# print(request5.text)
 
 data4 = {
     "id_wishlist" : 1
@@ -61,6 +61,12 @@ data5 = {
 request7 = requests.post(url+"/attribute_gift", headers=header, json=data5)
 print(request7.status_code)
 print(request7.text)
+
+
+
+request8 = requests.get(url+"/logout", headers=header)
+print(request8.status_code)
+print(request8.text)
 
 
 # data5 = {
