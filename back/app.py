@@ -27,19 +27,28 @@ def hello_world():
 
 @app.route("/login", methods=["POST"])
 def login():
-    pseudo = request.json.get("pseudo", None)
-    password = request.json.get("password", None)
+
+    dataStr = request.data.decode('utf-8')
+    data = json.loads(dataStr)
+
+    pseudo = data["pseudo"]
+    password = data["password"]
 
     if User.get_id(pseudo) is None:
-        print(User.get_id(pseudo))
-        return jsonify({"msg": "Pseudo is not in database"}), 401
+        # print(User.get_id(pseudo))
+        resp = jsonify({"msg": "Pseudo is not in database"})
+        status_code = 401
+        return resp,status_code
 
     id = User.get_id(pseudo)
     if not User.check_password(id, password):
-        return jsonify({"msg": "Bad password"}), 401
+        resp = jsonify({"msg": "Bad password"})
+        status_code = 401
     else:
         access_token = create_access_token(identity=id)
-        return jsonify(access_token=access_token), 200
+        resp = jsonify(access_token=access_token)
+        status_code = 200
+    return resp, status_code
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -221,5 +230,5 @@ def initialisation():
 
 
 if __name__ == '__main__':
-    #initialisation()
+    initialisation()
     app.run(debug = True)
