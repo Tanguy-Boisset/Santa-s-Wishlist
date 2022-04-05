@@ -41,7 +41,7 @@ function Navbar() {
           <Link to="/wishlist-list">Friends' Wishlists</Link>
         </li>
         <li>
-          <a onClick={logout}><u>Log out</u></a>
+          <a className='linkNav' onClick={logout}><u>Log out</u></a>
         </li>
       </ul>
       </div>  
