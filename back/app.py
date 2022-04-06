@@ -14,14 +14,14 @@ from datetime import timedelta
 from models import User, Gift, Wishlist
 app = Flask(__name__)
 
-ACCESS_EXPIRES = timedelta(minutes=15)
+# ACCESS_EXPIRES = timedelta(minutes=15)
 
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONFIG
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
+# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 
 jwt = JWTManager(app)
 db = SQLAlchemy(app)
@@ -204,6 +204,17 @@ def get_wishlist():
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
+@app.route("/get_my_wishlist", methods=["GET"])
+@cross_origin()
+@jwt_required()
+def get_my_wishlist():
+    id_user = get_jwt_identity()
+    wishlist = Wishlist.get_my_wishlist(id_user)
+    resp = make_response(jsonify(wishlist))
+    #resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp, 200
+    
 
 @app.route("/get_all_wishlists", methods=["GET"])
 #@jwt_required()

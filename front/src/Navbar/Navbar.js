@@ -54,12 +54,6 @@ function Navbar() {
             <li>
               <Link to="/">Home</Link>
             </li>
-            <li>
-              <Link to="/wishlist">My Wishlist</Link>
-            </li>
-            <li>
-              <Link to="/wishlist-list">Friends' Wishlists</Link>
-            </li>
             <Connected></Connected>
           </ul>
     </div>
