@@ -5,8 +5,6 @@ let linkText = "Lien vers mon cadeau -->";
 
 function Gift(gift,func,globVar,isItMyWishlist) {
 
-    console.log(isItMyWishlist);
-
     function postDeleteGift() {
         const rawResponse = fetch('http://localhost:5000/delete_gift', {
         method: 'POST',
@@ -25,7 +23,8 @@ function Gift(gift,func,globVar,isItMyWishlist) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('santaToken')
             },
         body: JSON.stringify({
             id_gift: gift.id
@@ -99,8 +98,6 @@ function Gift(gift,func,globVar,isItMyWishlist) {
 
 function AddGift({giftFunc, giftVar, isItMyWishlist}) {
     const location = useLocation().pathname.slice(10);
-
-    //console.log(isItMyWishlist);
 
     function postNewGift() {
         const rawResponse = fetch('http://localhost:5000/add_gift', {

@@ -237,9 +237,9 @@ def get_name():
 
 @app.route("/attribute_gift", methods=["POST"])
 @cross_origin()
-#@jwt_required()
+@jwt_required()
 def attribute_gift():
-    #id_user = get_jwt_identity()
+    id_user = get_jwt_identity()
     id_gift = request.json.get("id_gift", None)
 
     id_wishlist = Gift.get_id_wishlist_from_id_gift(id_gift)
@@ -252,7 +252,7 @@ def attribute_gift():
 
         return resp, 401
 
-    #elif id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
+    elif id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
 
         resp = make_response(jsonify({"msg": "You don't have the right to attribute your own gifts"}))
         #resp.headers['Access-Control-Allow-Origin'] = '*'
@@ -261,7 +261,6 @@ def attribute_gift():
 
         return resp, 401
     else:
-        id_user = 1 # à changer
         Gift.attribute_gift(id_gift, id_user)
 
         resp = make_response(jsonify({"msg": "Gift Attributed"}))

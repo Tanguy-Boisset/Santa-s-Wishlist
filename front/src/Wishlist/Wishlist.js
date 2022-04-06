@@ -9,7 +9,7 @@ function Wishlist() {
     let [my_wishlist, setDataWishlist] = useState([]);
     let [my_gifts, setDataGifts] = useState([]);
     let [updateGifts, updateGiftsFunc] = useState(true);
-    let [isItMyWishlist, setWishlistOwnership] = useState(false);
+    let [isItMyWishlist, setWishlistOwnership] = useState(true);
 
     useEffect(() => {
         const urlWishlist = "http://localhost:5000/getid";
