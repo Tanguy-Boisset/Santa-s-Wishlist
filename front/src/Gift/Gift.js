@@ -10,7 +10,8 @@ function Gift(gift,func,globVar,isItMyWishlist) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('santaToken')
             },
         body: JSON.stringify({
             id_gift_delete: gift.id
