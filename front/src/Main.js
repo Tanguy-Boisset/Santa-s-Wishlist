@@ -5,6 +5,7 @@ import {
   Route
 } from "react-router-dom";
 import Navbar from './Navbar/Navbar';
+import Footer from './Footer/Footer';
 import Theme from './Theme/Theme';
 import Home from './Home/Home';
 import Wishlist from './Wishlist/Wishlist';
@@ -28,6 +29,7 @@ export default function Main() {
             <Route path='/signup' element={<Signup/>} />
 
         </Routes>
+        <Footer/>
       </div>
     </Router>
   );
