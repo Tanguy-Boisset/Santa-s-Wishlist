@@ -15,11 +15,11 @@ function Login() {
             </div>
             <div action="/my-handling-form-page" method="get">
                 <div>
-                    <label for="login">Login :</label>
+                    <label htmlFor="login">Login :</label>
                     <input className="inputForm" type="text" id="login" name="login"/>
                 </div>
                 <div>
-                    <label for="password">Password :</label>
+                    <label htmlFor="password">Password :</label>
                     <input className="inputForm" type="password" id="password" name="password"/>
                 </div>
                 <a className="button" onClick={submitLogin}>Sign in</a>
