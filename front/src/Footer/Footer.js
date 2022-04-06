@@ -3,7 +3,7 @@ import './Footer.css';
 function Footer(){
     let username;
     const fetchName = async () => {
-        const urlGetName = "http://127.0.0.1:5000/getname";
+        const urlGetName = "http://127.0.0.1:5000/getmyname";
         const responseName = await fetch(urlGetName,{
             method: 'GET',
             headers: {

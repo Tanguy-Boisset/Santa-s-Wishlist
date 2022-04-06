@@ -21,7 +21,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONFIG
-# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 
 jwt = JWTManager(app)
 db = SQLAlchemy(app)
@@ -224,15 +224,25 @@ def get_id():
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
-@app.route("/getname", methods=["GET"])
+@app.route("/getname", methods=["POST"])
 @cross_origin()
-@jwt_required()
+#@jwt_required()
 def get_name():
-    current_id = get_jwt_identity()
-    # id = request.json.get("id", None)
-    user = User.get_name(current_id)
+    #current_id = get_jwt_identity()
+    id = request.json.get("id", None)
+    user = User.get_name(id)
     resp = make_response(jsonify(user))
     #resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp, 200
+
+@app.route("/getmyname", methods=["GET"])
+@cross_origin()
+@jwt_required()
+def get_my_name():
+    current_id = get_jwt_identity()
+    user = User.get_name(current_id)
+    resp = make_response(jsonify(user))
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
