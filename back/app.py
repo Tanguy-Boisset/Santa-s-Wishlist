@@ -195,9 +195,19 @@ def get_gift_from_wishlist():
 @cross_origin()
 @jwt_required()
 def get_wishlist():
-    #id_user = get_jwt_identity()
     hashed_url = request.json.get("hashed_url", None)
     wishlist = Wishlist.get_wishlist(hashed_url)
+    resp = make_response(jsonify(wishlist))
+    #resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    return resp, 200
+
+@app.route("/get_my_wishlist", methods=["GET"])
+@cross_origin()
+@jwt_required()
+def get_my_wishlist():
+    id_user = get_jwt_identity()
+    wishlist = Wishlist.get_my_wishlist(id_user)
     resp = make_response(jsonify(wishlist))
     #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
