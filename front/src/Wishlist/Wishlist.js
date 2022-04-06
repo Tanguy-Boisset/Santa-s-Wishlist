@@ -45,7 +45,7 @@ function Wishlist() {
             setDataWishlist(jsonWishlist);
             }
         fetchDataWishlist();
-    }, []);
+    }, [location]);
 
     useEffect(() => {
         const urlGifts = "http://localhost:5000/get_gift_from_wishlist";
