@@ -25,3 +25,10 @@
     display:flex;
     z-index: 10;
 }
+
+#footer{
+    width:100%;
+    bottom:0;
+    position:absolute;
+    background-color: blue;
+}
