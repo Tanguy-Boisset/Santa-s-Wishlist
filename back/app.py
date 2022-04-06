@@ -14,19 +14,19 @@ from datetime import timedelta
 from models import User, Gift, Wishlist
 app = Flask(__name__)
 
-ACCESS_EXPIRES = timedelta(minutes=15)
+#ACCESS_EXPIRES = timedelta(minutes=15)
 
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONFIG
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
+#app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 
 jwt = JWTManager(app)
 db = SQLAlchemy(app)
 
-
+'''
 # Setup our redis connection for storing the blocklisted tokens. You will probably
 # want your redis instance configured to persist data to disk, so that a restart
 # does not cause your application to forget that a JWT was revoked.
@@ -57,7 +57,7 @@ def logout():
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
     return resp, 200
-
+'''
 
 
 @app.route('/')
@@ -171,7 +171,7 @@ def delete_gift():
 
 
 @app.route("/get_gift_from_wishlist", methods=["POST"])
-#@jwt_required()
+@jwt_required()
 def get_gift_from_wishlist():
     #id_user = get_jwt_identity()
     id_wishlist = request.json.get("id_wishlist", None)
@@ -192,7 +192,7 @@ def get_gift_from_wishlist():
 
 @app.route("/get_wishlist", methods=["POST"])
 @cross_origin()
-#@jwt_required()
+@jwt_required()
 def get_wishlist():
     #id_user = get_jwt_identity()
     hashed_url = request.json.get("hashed_url", None)
@@ -204,11 +204,12 @@ def get_wishlist():
 
 
 @app.route("/get_all_wishlists", methods=["GET"])
-#@jwt_required()
+@jwt_required()
+@cross_origin()
 def get_all_wishlists():
     wishlist = Wishlist.get_all_wishlists()
     resp = make_response(jsonify(wishlist))
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
@@ -282,5 +283,5 @@ def initialisation():
 
 
 if __name__ == '__main__':
-    initialisation()
+    #initialisation()
     app.run(debug = True)

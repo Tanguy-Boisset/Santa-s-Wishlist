@@ -12,12 +12,6 @@ function Navbar() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/wishlist">My Wishlist</Link>
-          </li>
-          <li>
-            <Link to="/wishlist-list">Friends' Wishlists</Link>
-          </li>
-          <li>
             <Link to="/signup">Sign up</Link>
           </li>
           <li>

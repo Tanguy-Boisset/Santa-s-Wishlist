@@ -9,6 +9,25 @@ function Wishlist() {
     let [my_wishlist, setDataWishlist] = useState([]);
     let [my_gifts, setDataGifts] = useState([]);
     let [updateGifts, updateGiftsFunc] = useState(true);
+    let [isItMyWishlist, setWishlistOwnership] = useState(false);
+
+    useEffect(() => {
+        const urlWishlist = "http://localhost:5000/getid";
+        const fetchOwnership = async () => {
+            const responseId = await fetch(urlWishlist,{
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('santaToken')
+                }
+            });
+            const jsonId = await responseId.json();
+            let check = (jsonId == my_wishlist.id);
+            setWishlistOwnership(check);
+            }
+        fetchOwnership();
+    }, [my_wishlist]);
 
     useEffect(() => {
         const urlWishlist = "http://localhost:5000/get_wishlist";
@@ -17,7 +36,8 @@ function Wishlist() {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('santaToken')
                 },
                 body: JSON.stringify({hashed_url: location})
             });
@@ -34,7 +54,8 @@ function Wishlist() {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('santaToken')
                 },
                 body: JSON.stringify({id_wishlist: my_wishlist.id})
             });
@@ -52,9 +73,9 @@ function Wishlist() {
                 <h3>{my_wishlist.description}</h3>
                 <ul className="scrollbar">
                     {my_gifts.map(function(cadeau){
-            		    return <li key={cadeau.id}>{Gift(cadeau,updateGiftsFunc,updateGifts)}</li>;
+            		    return <li key={cadeau.id}>{Gift(cadeau,updateGiftsFunc,updateGifts,isItMyWishlist)}</li>;
           		})}
-                <AddGift giftFunc={updateGiftsFunc} giftVar={updateGifts}/>
+                <AddGift giftFunc={updateGiftsFunc} giftVar={updateGifts} isItMyWishlist={isItMyWishlist}/>
                 </ul>
 
 	        </div>

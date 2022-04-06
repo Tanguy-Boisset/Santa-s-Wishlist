@@ -1,13 +1,11 @@
 import { useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import './Gift.css';
 
 let linkText = "Lien vers mon cadeau -->";
-const isItMyWishlist = false;
 
-function Gift(gift,func,globVar) {
+function Gift(gift,func,globVar,isItMyWishlist) {
 
-    console.log(gift);
+    console.log(isItMyWishlist);
 
     function postDeleteGift() {
         const rawResponse = fetch('http://localhost:5000/delete_gift', {
@@ -48,7 +46,7 @@ function Gift(gift,func,globVar) {
         });
         const jsonNameFromId = await responseNameFromId.json();
         Array.from(document.getElementsByClassName(gift.id_user_who_offer)).map(e => e.innerText = jsonNameFromId);
-        };
+    };
 
     function RenderButton(props) {
         if (props.isItMyWishlist) {
@@ -99,8 +97,10 @@ function Gift(gift,func,globVar) {
 
 }
 
-function AddGift({giftFunc, giftVar}) {
+function AddGift({giftFunc, giftVar, isItMyWishlist}) {
     const location = useLocation().pathname.slice(10);
+
+    //console.log(isItMyWishlist);
 
     function postNewGift() {
         const rawResponse = fetch('http://localhost:5000/add_gift', {
