@@ -1,20 +1,17 @@
 import { useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import './Gift.css';
 
 let linkText = "Lien vers mon cadeau -->";
-const isItMyWishlist = false;
 
-function Gift(gift,func,globVar) {
-
-    console.log(gift);
+function Gift(gift,func,globVar,isItMyWishlist) {
 
     function postDeleteGift() {
         const rawResponse = fetch('http://localhost:5000/delete_gift', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('santaToken')
             },
         body: JSON.stringify({
             id_gift_delete: gift.id
@@ -27,7 +24,8 @@ function Gift(gift,func,globVar) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('santaToken')
             },
         body: JSON.stringify({
             id_gift: gift.id
@@ -48,7 +46,7 @@ function Gift(gift,func,globVar) {
         });
         const jsonNameFromId = await responseNameFromId.json();
         Array.from(document.getElementsByClassName(gift.id_user_who_offer)).map(e => e.innerText = jsonNameFromId);
-        };
+    };
 
     function RenderButton(props) {
         if (props.isItMyWishlist) {
@@ -99,7 +97,7 @@ function Gift(gift,func,globVar) {
 
 }
 
-function AddGift({giftFunc, giftVar}) {
+function AddGift({giftFunc, giftVar, isItMyWishlist}) {
     const location = useLocation().pathname.slice(10);
 
     function postNewGift() {
