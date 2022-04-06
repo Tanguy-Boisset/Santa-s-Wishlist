@@ -21,42 +21,42 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONFIG
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
+# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 
 jwt = JWTManager(app)
 db = SQLAlchemy(app)
 
 
-# Setup our redis connection for storing the blocklisted tokens. You will probably
-# want your redis instance configured to persist data to disk, so that a restart
-# does not cause your application to forget that a JWT was revoked.
-jwt_redis_blocklist = redis.StrictRedis(
-    host="localhost", port=6379, db=0, decode_responses=True
-)
+# # Setup our redis connection for storing the blocklisted tokens. You will probably
+# # want your redis instance configured to persist data to disk, so that a restart
+# # does not cause your application to forget that a JWT was revoked.
+# jwt_redis_blocklist = redis.StrictRedis(
+#     host="localhost", port=6379, db=0, decode_responses=True
+# )
 
-# Callback function to check if a JWT exists in the redis blocklist
-@jwt.token_in_blocklist_loader
-def check_if_token_is_revoked(jwt_header, jwt_payload):
-    jti = jwt_payload["jti"]
-    token_in_redis = jwt_redis_blocklist.get(jti)
-    return token_in_redis is not None
+# # Callback function to check if a JWT exists in the redis blocklist
+# @jwt.token_in_blocklist_loader
+# def check_if_token_is_revoked(jwt_header, jwt_payload):
+#     jti = jwt_payload["jti"]
+#     token_in_redis = jwt_redis_blocklist.get(jti)
+#     return token_in_redis is not None
 
 
-# Endpoint for revoking the current users access token. Save the JWTs unique
-# identifier (jti) in redis. Also set a Time to Live (TTL)  when storing the JWT
-# so that it will automatically be cleared out of redis after the token expires.
-@app.route("/logout", methods=["GET"])
-@jwt_required()
-def logout():
-    jti = get_jwt()["jti"]
-    print(jti)
-    jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
+# # Endpoint for revoking the current users access token. Save the JWTs unique
+# # identifier (jti) in redis. Also set a Time to Live (TTL)  when storing the JWT
+# # so that it will automatically be cleared out of redis after the token expires.
+# @app.route("/logout", methods=["GET"])
+# @jwt_required()
+# def logout():
+#     jti = get_jwt()["jti"]
+#     print(jti)
+#     jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
 
-    resp = make_response(jsonify("Access token revoked"))
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+#     resp = make_response(jsonify("Access token revoked"))
+#     resp.headers['Access-Control-Allow-Origin'] = '*'
+#     resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
-    return resp, 200
+#     return resp, 200
 
 
 
@@ -85,6 +85,8 @@ def login():
         status_code = 401
     else:
         access_token = create_access_token(identity=id)
+        print(access_token)
+        print(JWT_SECRET_KEY.decode('ISO-8859-1'))
         resp = jsonify(access_token=access_token)
         status_code = 200
     return resp, status_code
@@ -222,13 +224,13 @@ def get_id():
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
-@app.route("/getname", methods=["POST"])
+@app.route("/getname", methods=["GET"])
 @cross_origin()
-#@jwt_required()
+@jwt_required()
 def get_name():
-    #current_id = get_jwt_identity()
-    id = request.json.get("id", None)
-    user = User.get_name(id)
+    current_id = get_jwt_identity()
+    # id = request.json.get("id", None)
+    user = User.get_name(current_id)
     resp = make_response(jsonify(user))
     #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
@@ -282,5 +284,5 @@ def initialisation():
 
 
 if __name__ == '__main__':
-    initialisation()
+    # initialisation()
     app.run(debug = True)
