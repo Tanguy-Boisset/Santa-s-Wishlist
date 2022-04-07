@@ -38,7 +38,8 @@ function Gift(gift,func,globVar,isItMyWishlist) {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('santaToken')
             },
             body: JSON.stringify({
                 id: gift.id_user_who_offer
@@ -105,7 +106,8 @@ function AddGift({giftFunc, giftVar, isItMyWishlist}) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('santaToken')
             },
         body: JSON.stringify({
             name: document.getElementById("giftAddName").value,
