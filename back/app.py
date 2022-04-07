@@ -136,9 +136,8 @@ def signup():
 
 @app.route("/add_gift", methods=["POST"])
 @cross_origin()
-#@jwt_required()
+@jwt_required()
 def add_gift():
-    #id_user = get_jwt_identity()
     name = request.json.get("name", None)
     url = request.json.get("url", None)
     price = request.json.get("price", None)
@@ -150,7 +149,6 @@ def add_gift():
     Gift.add_Gift(wishlist['id'], name=name, url=url, price=price, description=description, state=state)
 
     resp = make_response(jsonify({"msg": "gift added to the wishlist ! "}))
-    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
     return resp, 200
@@ -180,13 +178,13 @@ def delete_gift():
 @app.route("/get_gift_from_wishlist", methods=["POST"])
 @jwt_required()
 def get_gift_from_wishlist():
-    #id_user = get_jwt_identity()
+    id_user = get_jwt_identity()
     id_wishlist = request.json.get("id_wishlist", None)
 
-    #if id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
-    #    oneself = True
-    #else:
-    #    oneself = False
+    if id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
+        oneself = True
+    else:
+        oneself = False
     oneself = False
 
     list_gifts = Gift.get_gifts(id_wishlist, oneself)
@@ -204,7 +202,6 @@ def get_wishlist():
     hashed_url = request.json.get("hashed_url", None)
     wishlist = Wishlist.get_wishlist(hashed_url)
     resp = make_response(jsonify(wishlist))
-    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
@@ -215,7 +212,6 @@ def get_my_wishlist():
     id_user = get_jwt_identity()
     wishlist = Wishlist.get_my_wishlist(id_user)
     resp = make_response(jsonify(wishlist))
-    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
@@ -227,7 +223,6 @@ def get_my_wishlist():
 def get_all_wishlists():
     wishlist = Wishlist.get_all_wishlists()
     resp = make_response(jsonify(wishlist))
-    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
@@ -243,13 +238,11 @@ def get_id():
 
 @app.route("/getname", methods=["POST"])
 @cross_origin()
-#@jwt_required()
+@jwt_required()
 def get_name():
-    #current_id = get_jwt_identity()
     id = request.json.get("id", None)
     user = User.get_name(id)
     resp = make_response(jsonify(user))
-    #resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
     return resp, 200
 
@@ -275,7 +268,6 @@ def attribute_gift():
     if id_wishlist is None:
 
         resp = make_response(jsonify({"msg": "This gift does not exists"}))
-        #resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
         return resp, 401
@@ -283,7 +275,6 @@ def attribute_gift():
     elif id_wishlist == Wishlist.get_id_wishlist_from_id_user(id_user):
 
         resp = make_response(jsonify({"msg": "You don't have the right to attribute your own gifts"}))
-        #resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
 
@@ -292,7 +283,6 @@ def attribute_gift():
         Gift.attribute_gift(id_gift, id_user)
 
         resp = make_response(jsonify({"msg": "Gift Attributed"}))
-        #resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Credentials'] = 'true'
 
         return resp, 200
