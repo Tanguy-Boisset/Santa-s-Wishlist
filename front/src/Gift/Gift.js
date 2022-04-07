@@ -79,7 +79,7 @@ function Gift(gift,func,globVar,isItMyWishlist) {
                 <h5 className="giftName">{gift.name}</h5>
                 <p className="giftPrice">{gift.price}€</p>
                 <p className="giftDesc">{gift.description}</p>
-                <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
+                <a href={gift.url} rel="noreferrer" className="giftLink">{linkText}</a>
                 <RenderButton isItMyWishlist={isItMyWishlist} taken={gift.state} offreurId={gift.id_user_who_offer}/>
             </div>
         );
@@ -90,7 +90,7 @@ function Gift(gift,func,globVar,isItMyWishlist) {
                 <h5 className="giftName">{gift.name}</h5>
                 <p className="giftPrice">{gift.price}€</p>
                 <p className="giftDesc">{gift.description}</p>
-                <a href={gift.url} target="_blank" rel="noreferrer" className="giftLink">{linkText}</a>
+                <a href={gift.url} rel="noreferrer" className="giftLink">{linkText}</a>
                 <RenderButton isItMyWishlist={isItMyWishlist} taken={gift.state}/>
             </div>
         );
