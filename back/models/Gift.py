@@ -62,7 +62,7 @@ def is_in_database(id):
 
 def get_id_wishlist_from_id_gift(id_gift):
     query = select([
-        GiftsTable.c.id,
+        GiftsTable.c.id_wishlist,
         ]).where(GiftsTable.c.id == id_gift).distinct()
     conn = engine.connect()
     results = conn.execute(query)

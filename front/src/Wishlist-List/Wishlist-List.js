@@ -8,7 +8,14 @@ function WishlistList() {
     useEffect(() => {
         const url = "http://localhost:5000/get_all_wishlists";
         const fetchData = async () => {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('santaToken')
+                }
+            });
             const json = await response.json();
             setData(json);
             }
