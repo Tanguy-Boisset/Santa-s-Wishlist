@@ -4,8 +4,10 @@ import random
 
 url = "http://127.0.0.1:5000"
 
+random_pseudo = "pseudo"+str(random.randint(0,10**6))
+
 data = {
-    "pseudo":"pseudo"+str(random.randint(0,10**6)),
+    "pseudo":random_pseudo,
     "name": "name",
     "surname": "surname",
     "password": "password"
@@ -67,6 +69,23 @@ print(request7.text)
 request8 = requests.get(url+"/logout", headers=header)
 print(request8.status_code)
 print(request8.text)
+
+
+data6 = {
+    "pseudo":random_pseudo,
+    "password": "password"
+}
+
+
+request9 = requests.post(url+"/login", headers=header, json=data6)
+print(request9.status_code)
+print(request9.text)
+
+jwt = json.loads(request9.text)["access_token"]
+header = {"Authorization":f"Bearer {jwt}"}
+
+request10 = requests.get(url+"/get_all_wishlists", headers=header)
+print(request10.text)
 
 
 # data5 = {
