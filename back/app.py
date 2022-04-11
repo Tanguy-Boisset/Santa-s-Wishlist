@@ -2,6 +2,7 @@ import hashlib
 import json
 import redis
 import time
+import logging
 
 from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,14 @@ from flask import Flask, request, redirect, jsonify, make_response
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager, get_jwt
 from config import DATABASE_CONFIG, JWT_SECRET_KEY
 from datetime import timedelta
+
+from flask import Flask
+import logging
+
+app = Flask(__name__)
+
+logging.basicConfig(filename='data/record.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+
 
 from models import User, Gift, Wishlist
 app = Flask(__name__)
@@ -45,15 +54,14 @@ jwt_redis_blocklist = redis.StrictRedis(
 #     return token_in_redis is not None
 
 
-# # Endpoint for revoking the current users access token. Save the JWTs unique
-# # identifier (jti) in redis. Also set a Time to Live (TTL)  when storing the JWT
-# # so that it will automatically be cleared out of redis after the token expires.
-# @app.route("/logout", methods=["GET"])
-# @jwt_required()
-# def logout():
-#     jti = get_jwt()["jti"]
-#     print(jti)
-#     jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
+# Endpoint for revoking the current users access token. Save the JWTs unique
+# identifier (jti) in redis. Also set a Time to Live (TTL)  when storing the JWT
+# so that it will automatically be cleared out of redis after the token expires.
+@app.route("/logout", methods=["GET"])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
 
 #     resp = make_response(jsonify("Access token revoked"))
 #     resp.headers['Access-Control-Allow-Origin'] = '*'
