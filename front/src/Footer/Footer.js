@@ -1,6 +1,13 @@
 import './Footer.css';
 
 function Footer(){
+    if (localStorage.getItem("santaToken") == null) {
+        return (
+            <div id='footer'>
+                <div>Not logged in</div>
+            </div>
+        )
+    }
     let username;
     const fetchName = async () => {
         const urlGetName = "http://127.0.0.1:5000/getmyname";
