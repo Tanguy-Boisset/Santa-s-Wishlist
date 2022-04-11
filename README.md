@@ -12,6 +12,7 @@ docker build --file=front/front.dockerfile -t santa-wishlist-front .
 docker build --file=back/back.dockerfile -t santa-wishlist-back .
 docker-compose -f docker-compose.yml up
 ```
+Then connect to `localhost:3000`
 
 ## 🎁 Functionalities
 The user can create an account. When logged in, he can create a new wishlist for himself or see his other wishlists. To sign in, the following information are needed :
