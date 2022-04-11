@@ -6,7 +6,12 @@ Create and share your Christmas wishlists to your friends to help Santa find wha
 Santa's little helper : cette application web permet aux membres d'un groupe de gérer une ou des listes de souhaits pour des cadeaux de Noël, et de choisir dans la liste d'autres personnes ce qu'ils pourront leur offrir (l'application garantissant l'absence de conflits et préservant au maximum la surprise). Différentes améliorations peuvent être imaginées, comme l'organisation d'un événement de type "secret santa", des facilités dans l'interactions avec des sites marchants, l'envoi de messages éventuellement anonymes...
 
 ## 👷 Installation
-TODO
+To run the app in a docker, run the following commands from the project's root folder :
+```
+docker build --file=front/front.dockerfile -t santa-wishlist-front .
+docker build --file=back/back.dockerfile -t santa-wishlist-back .
+docker-compose -f docker-compose.yml up
+```
 
 ## 🎁 Functionalities
 The user can create an account. When logged in, he can create a new wishlist for himself or see his other wishlists. To sign in, the following information are needed :
